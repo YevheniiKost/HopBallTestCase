@@ -15,7 +15,8 @@ namespace Gameplay
     public class MovableBackground : MonoBehaviour, IMovableBackground
     {
         [SerializeField] private float _movementSpeed;
-        [SerializeField] private BackgroundQuadsGenerator _generator;
+        [SerializeField] private ItemGenerator _coinsGenerator;
+        [SerializeField] private BackgroundQuadGenerator _quadsGenerator;
 
         private bool _isMovingDown;
         private float _currentSpeedMultiplier;
@@ -26,13 +27,15 @@ namespace Gameplay
         {
             _isMovingDown = true;
             _currentSpeedMultiplier = speedMultiplier;
-            _generator.StartSpawn();
+            _coinsGenerator.StartSpawn();
+            _quadsGenerator.StartSpawn();
         }
 
         public void StopMovement()
         {
             _isMovingDown = false;
-            _generator.StopSpawn();
+            _coinsGenerator.StopSpawn();
+            _quadsGenerator.StopSpawn();
         }
 
         private void Awake()
