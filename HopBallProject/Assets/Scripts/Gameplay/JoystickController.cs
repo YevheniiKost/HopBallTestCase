@@ -12,10 +12,10 @@ namespace Gameplay
         [SerializeField] private float _minVertivalYPosition;
         [SerializeField] private Collider2D _collider;
         [SerializeField] private float _lerpSpeed;
-        [SerializeField] private Rigidbody2D _rigidbody;
 
         private float _xPos;
-        private float _forceReduceFactor = .5f;
+        private float _forceReduceFactor = .8f;
+        private bool _isInputBlocked;
 
         public Collider2D MyCollider => _collider;
 
@@ -23,8 +23,13 @@ namespace Gameplay
 
         private float _previousYPos = 0;
 
+        public void BlockInput() => _isInputBlocked = true;
+        public void UnblockInput() => _isInputBlocked = false;
         public void Move(Vector2 direction)
         {
+            if (_isInputBlocked)
+                return;
+
             direction.y = Mathf.Clamp(direction.y, _minVertivalYPosition, _maxVerticalYPosition);
             direction.x = _xPos;
             transform.position = Vector2.Lerp(transform.position, direction, _lerpSpeed);

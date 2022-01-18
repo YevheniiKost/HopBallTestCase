@@ -51,7 +51,7 @@ namespace Core.UI
         private void Start()
         {
             OnStart();
-            EventAggregator.Post(this, new Events.RegisterWindow { ScreenType = this.ScreenType, View = this });
+            EventAggregator.Post(this, new Events.RegisterWindowEvent { ScreenType = this.ScreenType, View = this });
             if (_hideOnAwake)
                 Hide();
         }
@@ -63,6 +63,8 @@ namespace Core.UI
         Main,
         Shop,
         Win,
-        Loading
+        Loading,
+        Game,
+        PrepareToGame
     }
 }

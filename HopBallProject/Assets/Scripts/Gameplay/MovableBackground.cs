@@ -1,4 +1,5 @@
 ﻿using Core.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,9 @@ namespace Gameplay
     {
         void MoveDown(float speedMultiplier);
         void StopMovement();
+        void Reset();
         float CurrentHeight { get; }
+        event Action<float> OnHeightChange;
     }
 
     public class MovableBackground : MonoBehaviour, IMovableBackground
@@ -22,6 +25,8 @@ namespace Gameplay
         private float _currentSpeedMultiplier;
 
         public float CurrentHeight => -transform.position.y;
+
+        public event Action<float> OnHeightChange;
 
         public void MoveDown(float speedMultiplier)
         {
@@ -36,6 +41,11 @@ namespace Gameplay
             _isMovingDown = false;
             _coinsGenerator.StopSpawn();
             _quadsGenerator.StopSpawn();
+        }
+
+        public void Reset()
+        {
+            transform.position = Vector3.zero;
         }
 
         private void Awake()
@@ -57,18 +67,7 @@ namespace Gameplay
         private void MoveDown()
         {
             transform.position += Vector3.down * _movementSpeed * _currentSpeedMultiplier * Time.deltaTime;
-        }
-
-        [ContextMenu("Move")]
-        private void MoveTest()
-        {
-            MoveDown(1);
-        }
-
-        [ContextMenu("Stop")]
-        private void StopMoveTest()
-        {
-            StopMovement();
+            OnHeightChange?.Invoke(CurrentHeight);
         }
     }
 }

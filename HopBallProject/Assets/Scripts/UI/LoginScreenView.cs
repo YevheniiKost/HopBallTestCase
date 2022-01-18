@@ -15,8 +15,12 @@ namespace Core.UI
 
         protected override void OnAwake()
         {
-            _loginCommand = Factory.Command.CreateLoginCommand();
             _loginButton.onClick.AddListener(OnLoginButtonClickHandler);
+        }
+
+        protected override void OnStart()
+        {
+            _loginCommand = Factory.Command.CreateLoginCommand();
         }
 
         private void OnLoginButtonClickHandler()

@@ -2,5 +2,7 @@
 
 namespace Events
 {
-    public class RegisterWindow { public ScreenType ScreenType; public IView View; }
+    public class RegisterWindowEvent { public ScreenType ScreenType; public IView View; }
+    public class OnBallFallEvent { }
+    public class OnGetCoinEvent { };
 }

@@ -1,5 +1,6 @@
 ﻿using Core.UI;
 using Core.Utilities;
+using Gameplay;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,14 +34,19 @@ namespace Commands
 
     public class PlayCommand : IGameCommand
     {
+        private IUIManager _uiManager;
+        private IGameplayController _gameplayController;
+
         public PlayCommand()
         {
-            // init play game logic
+            _uiManager = ServiceLocator.SharedInstanse.Resolve<IUIManager>();
+            _gameplayController = ServiceLocator.SharedInstanse.Resolve<IGameplayController>();
         }
         public void Execute()
         {
-            //play game logic
-            Debug.Log("Play game");
+            _uiManager.CloseScreen(ScreenType.Main);
+            _uiManager.OpenScreen(ScreenType.PrepareToGame);
+            _gameplayController.PrepareToGame();
         }
     }
 
@@ -95,7 +101,25 @@ namespace Commands
         public void Execute()
         {
             _uiManager.CloseScreen(ScreenType.Win);
+            _uiManager.CloseScreen(ScreenType.Game);
             _uiManager.OpenScreen(ScreenType.Main);
+        }
+    }
+
+    public class OnPrepareGameClickCommand : IGameCommand
+    {
+        private IGameplayController _gameplayController;
+        private IUIManager _uIManager;
+        public OnPrepareGameClickCommand()
+        {
+            _gameplayController = ServiceLocator.SharedInstanse.Resolve<IGameplayController>();
+            _uIManager = ServiceLocator.SharedInstanse.Resolve<IUIManager>();
+        }
+        public void Execute()
+        {
+            _uIManager.CloseScreen(ScreenType.PrepareToGame);
+            _uIManager.OpenScreen(ScreenType.Game);
+            _gameplayController.StartGame();
         }
     }
 }
@@ -127,6 +151,10 @@ public static partial class Factory
         public static Commands.IGameCommand CreateExitWinScreenCommand()
         {
             return new Commands.ExitWinSreenCommand();
+        }
+        public static Commands.IGameCommand CreatePrepareGameClickCommand()
+        {
+            return new Commands.OnPrepareGameClickCommand();
         }
     }
 }

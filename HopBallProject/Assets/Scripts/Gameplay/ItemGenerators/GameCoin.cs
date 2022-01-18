@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Core.Utilities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,8 +11,7 @@ namespace Gameplay
         {
             if (collision.GetComponent<GameBall>())
             {
-                //Get coin logic
-                Debug.Log("Player get coin");
+                EventAggregator.Post(this, new Events.OnGetCoinEvent());
                 ReturnToPool();
             }
         }

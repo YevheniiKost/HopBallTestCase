@@ -58,16 +58,16 @@ namespace Core.UI
         private void Awake()
         {
             ServiceLocator.SharedInstanse.Register<IUIManager>(this);
-            EventAggregator.Subscribe<Events.RegisterWindow>(OnRegisterWindow);
+            EventAggregator.Subscribe<Events.RegisterWindowEvent>(OnRegisterWindow);
         }
 
         private void OnDestroy()
         {
             ServiceLocator.SharedInstanse.Unregister<IUIManager>();
-            EventAggregator.Unsubscribe<Events.RegisterWindow>(OnRegisterWindow);
+            EventAggregator.Unsubscribe<Events.RegisterWindowEvent>(OnRegisterWindow);
         }
 
-        private void OnRegisterWindow(object arg1, RegisterWindow data)
+        private void OnRegisterWindow(object arg1, RegisterWindowEvent data)
         {
             if (_screens.ContainsKey(data.ScreenType))
             {
