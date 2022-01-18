@@ -10,16 +10,9 @@ namespace Gameplay
     public class GameInputController : MonoBehaviour
     {
         [SerializeField] private LayerMask _joysticLayerMask;
-        [SerializeField] private JoystickController _leftJoystic;
-        [SerializeField] private JoystickController _rightJoystic;
 
-        private IJoysticController _leftJoysticController => _leftJoystic;
-        private IJoysticController _rightJoystickController => _rightJoystic;
-
-        private IJoysticController _currentController;
         private Camera _mainCamera;
         private bool _playerInput;
-
 
         private void Start()
         {
@@ -28,45 +21,25 @@ namespace Gameplay
 
         private void Update()
         {
-            _playerInput = PlayerInput();
-            if (!PlayerInput())
+            if(Input.touchCount > 0)
             {
-                _currentController = null;
+                foreach (var touch in Input.touches)
+                {
+                    ProcessInput(touch.position);
+                }
             }
         }
 
-        private void FixedUpdate()
+        private void ProcessInput(Vector3 screenPosition)
         {
-            if (_playerInput)
-                ProcessInput();
-        }
-
-        private void ProcessInput()
-        {
-            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(screenPosition);
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPosition, Vector2.zero, _joysticLayerMask);
 
-            if(_currentController != null)
+            if (hit.collider.TryGetComponent<IJoysticController>(out var joystick))
             {
-                _currentController.Move(mouseWorldPosition);
-                return;
+                joystick.Move(mouseWorldPosition);
             }
 
-            if (hit.collider == null)
-            {
-                return;
-            }else if(hit.collider == _leftJoysticController.MyCollider)
-            {
-                _currentController = _leftJoysticController;
-            }else if (hit.collider == _rightJoystic.MyCollider)
-            {
-                _currentController = _rightJoystickController;
-            }
-        }
-
-        private bool PlayerInput()
-        {
-            return Input.GetMouseButton(0);
         }
     }
 }

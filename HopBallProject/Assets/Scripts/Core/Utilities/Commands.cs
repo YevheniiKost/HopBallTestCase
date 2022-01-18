@@ -1,4 +1,5 @@
-﻿using Core.UI;
+﻿using Core.Backend;
+using Core.UI;
 using Core.Utilities;
 using Gameplay;
 using System.Collections;
@@ -20,13 +21,15 @@ namespace Commands
     public class LoginCommand : IGameCommand
     {
         private IUIManager _uiManager;
+        private IPlayfabManager _playfabManager;
         public LoginCommand()
         {
             _uiManager = ServiceLocator.SharedInstanse.Resolve<IUIManager>();
+            _playfabManager = ServiceLocator.SharedInstanse.Resolve<IPlayfabManager>();
         }
         public void Execute()
         {
-            Debug.Log("Player log in");
+            _playfabManager.Login();
             _uiManager.CloseScreen(ScreenType.Login);
             _uiManager.OpenScreen(ScreenType.Main);
         }
