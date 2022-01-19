@@ -17,10 +17,10 @@ namespace Gameplay
         [SerializeField, Range(0,10)] private float _maxSpawntRate = 2;
         [SerializeField] protected float _itemXPosDelta = 2.5f;
 
+        protected IMovableBackground _background;
         private bool _isSpawning;
         private float _nextSpawnTime;
         private Queue<SpawItem> _quadsQueue = new Queue<SpawItem>();
-        private IMovableBackground _background;
 
         public void StartSpawn()
         {
@@ -32,6 +32,11 @@ namespace Gameplay
             _isSpawning = false;
         }
 
+        public void SpawnItemImmediately()
+        {
+            SpawnItem();
+        }
+
         public void ReturnToPool(SpawItem item)
         {
             item.gameObject.SetActive(false);
@@ -40,7 +45,7 @@ namespace Gameplay
             _quadsQueue.Enqueue(item);
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             _background = ServiceLocator.SharedInstanse.Resolve<IMovableBackground>();  
         }

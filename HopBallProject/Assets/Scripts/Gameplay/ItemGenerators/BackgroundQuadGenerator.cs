@@ -14,6 +14,10 @@ namespace Gameplay
         [SerializeField] private float _minQuadSize = 1.5f;
         [SerializeField] private float _maxQuadSize = 4;
 
+        protected override void Start()
+        {
+            base.Start();
+        }
         protected override void SpawnItem()
         {
             BackgroundQuad quad = (BackgroundQuad)GetItemFromQueue();

@@ -204,6 +204,7 @@ Transform:
   - {fileID: 2227650251914054595}
   - {fileID: 8618489214070658589}
   - {fileID: 7956154867928501613}
+  - {fileID: 893704325998162593}
   m_Father: {fileID: 2227650251844437430}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1137,8 +1138,6 @@ MonoBehaviour:
   _joysticLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  _leftJoystic: {fileID: 2227650250602801763}
-  _rightJoystic: {fileID: 2227650250565067713}
 --- !u!1 &2227650251844437429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1813,6 +1812,57 @@ MonoBehaviour:
   _darkColor: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 1}
   _minQuadSize: 1.5
   _maxQuadSize: 4
+--- !u!1 &6466261079856506152
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 893704325998162593}
+  - component: {fileID: 5362519924838968757}
+  m_Layer: 0
+  m_Name: HighScoreSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &893704325998162593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6466261079856506152}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2227650250013161986}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5362519924838968757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6466261079856506152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80d1134dafa7b9a479fbfed6779e0522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemParent: {fileID: 2227650251914054595}
+  _itemPrefab: {fileID: 1691972831844146971, guid: 22e1227427ec29e4b90301616bc1ba58,
+    type: 3}
+  _spawnHeight: 10
+  _disappearHeigh: -10
+  _minSpawnRate: 0
+  _maxSpawntRate: 2
+  _itemXPosDelta: 0
 --- !u!1001 &3256482832662225128
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1829,6 +1879,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Constraints
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736701229899444806, guid: 0ca6c646ff454474887fab81b09ebb8c,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3736701229899444810, guid: 0ca6c646ff454474887fab81b09ebb8c,
         type: 3}

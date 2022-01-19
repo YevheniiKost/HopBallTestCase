@@ -15,6 +15,8 @@ namespace Gameplay
         void StartGame();
         void StopGame();
         void ResetGame();
+        event Action OnGameStarted;
+        event Action OnGameEnded;
     }
     public class GameplayController : MonoBehaviour, IGameplayController
     {
@@ -27,6 +29,10 @@ namespace Gameplay
         private Vector3 _righJoystickInitialPosition;
 
         private IPlayer _player;
+        private IMovableBackground _background;
+
+        public event Action OnGameStarted;
+        public event Action OnGameEnded;
 
         public void PrepareToGame()
         {
@@ -40,6 +46,7 @@ namespace Gameplay
             GetGameElementsPositions();
             _leftJoystick.UnblockInput();
             _rightJoystick.UnblockInput();
+            OnGameStarted?.Invoke();
         }
 
         public void StopGame()
@@ -47,8 +54,10 @@ namespace Gameplay
             ActivateJoystics(false);
             _ball.DisactivateBall();
             _ball.gameObject.SetActive(false);
+            CheckHighScore();
             ActivateEndGameUI();
             ResetGame();
+            OnGameEnded?.Invoke();
         }
 
         public void ResetGame()
@@ -57,7 +66,7 @@ namespace Gameplay
             _leftJoystick.transform.position = _leftJoystickInitialPosition;
             _rightJoystick.transform.position = _righJoystickInitialPosition;
 
-            ServiceLocator.SharedInstanse.Resolve<IMovableBackground>().Reset();
+            _background.Reset();
         }
 
         private void Awake()
@@ -71,6 +80,7 @@ namespace Gameplay
         {
             ActivateJoystics(false);
             _player = ServiceLocator.SharedInstanse.Resolve<IPlayer>();
+            _background = ServiceLocator.SharedInstanse.Resolve<IMovableBackground>();
         }
 
         private void OnDestroy()
@@ -114,6 +124,14 @@ namespace Gameplay
         private void OnGetCoinHandler(object arg1, OnGetCoinEvent arg2)
         {
             _player.Wallet.AddCoins(1);
+        }
+
+        private void CheckHighScore()
+        {
+            if(_background.CurrentHeight > _player.HighScore)
+            {
+                _player.GetNewHighScroe(_background.CurrentHeight);
+            }
         }
 
     }
