@@ -6,19 +6,36 @@ using UnityEngine.UI;
 
 namespace Core.UI
 {
-    public class ShopScreenVew : BaseScreen
+    public interface IShopScreenView : IView
+    {
+        void InitShop(List<BallItemDescriptor> items);
+    }
+
+    public class ShopScreenVew : BaseScreen, IShopScreenView
     {
         [SerializeField] private Transform _itemsContainer;
         [SerializeField] private BallShopItemView _shopItemPrefab;
         [SerializeField] private Button _backButton;
 
         [Header("Temp")]
-        [SerializeField] private List<BallShopItemDescriptor> _ballDescriptors;
+        [SerializeField] private List<BallItemDescriptor> _defaultItems;
 
         public override ScreenType ScreenType => ScreenType.Shop;
 
         private Commands.IGameCommand _exitShopCommand;
         private Commands.ITryByeBallCommand _tryByeBallCommand;
+
+        public void InitShop(List<BallItemDescriptor> items)
+        {
+            if (items != null)
+            {
+                CreateShop(items);
+            }
+            else
+            {
+                CreateShop(_defaultItems);
+            }
+        }
 
         protected override void OnAwake()
         {
@@ -28,10 +45,9 @@ namespace Core.UI
         protected override void OnStart()
         {
             PrepareCommands();
-            CreateShop(_ballDescriptors);
         }
 
-        private void CreateShop(List<BallShopItemDescriptor> ballDescriptors)
+        private void CreateShop(List<BallItemDescriptor> ballDescriptors)
         {
             foreach (var descriptor in ballDescriptors)
             {
@@ -47,7 +63,7 @@ namespace Core.UI
             _tryByeBallCommand = Factory.Command.CreateTryByeBallCommand();
         }
 
-        private void OnShopItemClick(BallShopItemDescriptor descriptor)
+        private void OnShopItemClick(BallItemDescriptor descriptor)
         {
             _tryByeBallCommand.Execute(descriptor);
         }
@@ -56,13 +72,17 @@ namespace Core.UI
         {
             _exitShopCommand.Execute();
         }
+
+        
     }
 
     [System.Serializable]
-    public class BallShopItemDescriptor
+    public class BallItemDescriptor
     {
         public Color Color;
         public string Name;
         public int Price;
+        public float Weight;
+        public float Radius;
     }
 }

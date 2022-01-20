@@ -15,7 +15,12 @@ namespace Commands
 
     public interface ITryByeBallCommand
     {
-        void Execute(BallShopItemDescriptor descriptor);
+        void Execute(BallItemDescriptor descriptor);
+    }
+
+    public interface IInitGameShopCommand
+    {
+        void Execute(List<BallItemDescriptor> items);
     }
 
     public class LoginCommand : IGameCommand
@@ -30,6 +35,7 @@ namespace Commands
         public void Execute()
         {
             _playfabManager.Login();
+            
             _uiManager.CloseScreen(ScreenType.Login);
             _uiManager.OpenScreen(ScreenType.Main);
         }
@@ -74,7 +80,7 @@ namespace Commands
         {
 
         }
-        public void Execute(BallShopItemDescriptor descriptor)
+        public void Execute(BallItemDescriptor descriptor)
         {
             Debug.Log($"Try to bye {descriptor.Name}");
         }
@@ -125,6 +131,20 @@ namespace Commands
             _gameplayController.StartGame();
         }
     }
+
+    public class InitGameShopCommand : IInitGameShopCommand
+    {
+        private IUIManager _uiManager;
+        public InitGameShopCommand()
+        {
+            _uiManager = ServiceLocator.SharedInstanse.Resolve<IUIManager>();
+        }
+        public void Execute(List<BallItemDescriptor> items)
+        {
+            var shopView = (IShopScreenView)_uiManager.GetWindow(ScreenType.Shop);
+            shopView.InitShop(items);
+        }
+    }
 }
 
 public static partial class Factory
@@ -158,6 +178,10 @@ public static partial class Factory
         public static Commands.IGameCommand CreatePrepareGameClickCommand()
         {
             return new Commands.OnPrepareGameClickCommand();
+        }
+        public static Commands.IInitGameShopCommand CreateInitGameShopCommands()
+        {
+            return new Commands.InitGameShopCommand();
         }
     }
 }

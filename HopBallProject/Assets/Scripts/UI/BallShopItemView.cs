@@ -9,7 +9,7 @@ namespace Core.UI
 {
     public class BallShopItemView : MonoBehaviour
     {
-        public event Action<BallShopItemDescriptor> OnItemClicked;
+        public event Action<BallItemDescriptor> OnItemClicked;
 
         [SerializeField] private Image _ballImage;
         [SerializeField] private TextMeshProUGUI _ballNameMesh;
@@ -17,10 +17,12 @@ namespace Core.UI
         [SerializeField] private Button _byeButton;
 
         private string _ballPriceText;
-        private BallShopItemDescriptor _descriptor;
+        private BallItemDescriptor _descriptor;
 
-        public void Init(BallShopItemDescriptor descriptor)
+        public void Init(BallItemDescriptor descriptor)
         {
+            _ballPriceText = _ballPriceMesh.text;
+
             _ballImage.color = descriptor.Color;
             _ballNameMesh.text = descriptor.Name;
             _ballPriceMesh.text = string.Format(_ballPriceText, descriptor.Price);
@@ -29,7 +31,6 @@ namespace Core.UI
 
         private void Awake()
         {
-            _ballPriceText = _ballNameMesh.text;
             _byeButton.onClick.AddListener(OnByeButtonClickHandler);
         }
 

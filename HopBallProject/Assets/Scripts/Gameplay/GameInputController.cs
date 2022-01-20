@@ -12,7 +12,6 @@ namespace Gameplay
         [SerializeField] private LayerMask _joysticLayerMask;
 
         private Camera _mainCamera;
-        private bool _playerInput;
 
         private void Start()
         {
@@ -21,16 +20,37 @@ namespace Gameplay
 
         private void Update()
         {
-            if(Input.touchCount > 0)
+#if UNITY_EDITOR
+
+            if (Input.GetMouseButton(0))
+            {
+                ProcessMouseInput();
+            }
+#endif
+
+#if UNITY_ANDROID
+            if (Input.touchCount > 0)
             {
                 foreach (var touch in Input.touches)
                 {
-                    ProcessInput(touch.position);
+                    ProcessTouchInput(touch.position);
                 }
+            }
+#endif
+        }
+
+        private void ProcessMouseInput()
+        {
+            var mousePosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, _joysticLayerMask);
+
+            if(hit.collider.TryGetComponent<IJoysticController>(out var joystic))
+            {
+                joystic.Move(mousePosition);
             }
         }
 
-        private void ProcessInput(Vector3 screenPosition)
+        private void ProcessTouchInput(Vector3 screenPosition)
         {
             var mouseWorldPosition = _mainCamera.ScreenToWorldPoint(screenPosition);
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPosition, Vector2.zero, _joysticLayerMask);

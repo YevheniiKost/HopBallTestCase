@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Core.Backend;
+using Core.Utilities;
+using Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +29,8 @@ namespace Core.Player
         {
             _coins = coins;
             _goldCoins = goldCoins;
+            EventAggregator.Subscribe<Events.OnGameEnded>(OnGameEndedHandler);
+            EventAggregator.Subscribe<Events.OnGameStarted>(OnGameStartedHandler);
         }
 
         public int GetCoins => _coins;
@@ -56,5 +61,32 @@ namespace Core.Player
                 return false;
             }
         }
+
+        private void OnGameStartedHandler(object arg1, OnGameStarted arg2)
+        {
+            var playfabManager = ServiceLocator.SharedInstanse.Resolve<IPlayfabManager>();
+            var currencyData = playfabManager.PlayerCurrencyData;
+            _coins = currencyData.Coins;
+            _goldCoins = currencyData.GoldCoins;
+            OnNumberOfCoinsChange?.Invoke(_coins);
+        }
+
+        private void OnGameEndedHandler(object arg1, OnGameEnded data)
+        {
+            var playfabManager = ServiceLocator.SharedInstanse.Resolve<IPlayfabManager>();
+            playfabManager.SetCurrencyData(new PlayerCurrencyData { Coins = _coins, GoldCoins = _goldCoins });
+        }
+    }
+
+    public class PlayerCurrencyData
+    {
+        public int Coins;
+        public int GoldCoins;
+    }
+
+    public enum PlayerCurrencyType
+    {
+        Coins,
+        GoldCoins
     }
 }

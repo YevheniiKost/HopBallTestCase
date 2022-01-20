@@ -1,5 +1,6 @@
 ﻿using Core.Player;
 using Core.Utilities;
+using Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,18 +14,28 @@ namespace Gameplay
         private IGameplayController _gameController;
         private bool _isHighScoreShowed = false;
 
+        private void Awake()
+        {
+            EventAggregator.Subscribe<Events.OnGameStarted>(OnGameStartedHandler);
+        }
+
         protected override void Start()
         {
             base.Start();
             _player = ServiceLocator.SharedInstanse.Resolve<IPlayer>();
+            _gameController = ServiceLocator.SharedInstanse.Resolve<IGameplayController>();
             _background.OnHeightChange += OnHeighChangeHandler;
-            _gameController.OnGameStarted += OnGameStartedHandler;
         }
 
         private void OnDestroy()
         {
             _background.OnHeightChange -= OnHeighChangeHandler;
-            _gameController.OnGameStarted -= OnGameStartedHandler;
+            EventAggregator.Unsubscribe<Events.OnGameStarted>(OnGameStartedHandler);
+        }
+
+        private void OnGameStartedHandler(object arg1, OnGameStarted arg2)
+        {
+            _isHighScoreShowed = false;
         }
 
         private void OnHeighChangeHandler(float currentHeight)
@@ -37,11 +48,6 @@ namespace Gameplay
                 SpawnItem();
                 _isHighScoreShowed = true;
             }
-        }
-
-        private void OnGameStartedHandler()
-        {
-            _isHighScoreShowed = false;
         }
     }
 }

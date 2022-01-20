@@ -1,4 +1,5 @@
-﻿using Core.Player;
+﻿using Core.Backend;
+using Core.Player;
 using Core.UI;
 using Core.Utilities;
 using Events;
@@ -15,8 +16,6 @@ namespace Gameplay
         void StartGame();
         void StopGame();
         void ResetGame();
-        event Action OnGameStarted;
-        event Action OnGameEnded;
     }
     public class GameplayController : MonoBehaviour, IGameplayController
     {
@@ -30,9 +29,7 @@ namespace Gameplay
 
         private IPlayer _player;
         private IMovableBackground _background;
-
-        public event Action OnGameStarted;
-        public event Action OnGameEnded;
+        private IPlayfabManager _playFabManager;
 
         public void PrepareToGame()
         {
@@ -46,7 +43,7 @@ namespace Gameplay
             GetGameElementsPositions();
             _leftJoystick.UnblockInput();
             _rightJoystick.UnblockInput();
-            OnGameStarted?.Invoke();
+            EventAggregator.Post(this, new Events.OnGameStarted());
         }
 
         public void StopGame()
@@ -57,7 +54,7 @@ namespace Gameplay
             CheckHighScore();
             ActivateEndGameUI();
             ResetGame();
-            OnGameEnded?.Invoke();
+            EventAggregator.Post(this, new Events.OnGameEnded { Height = _background.CurrentHeight });
         }
 
         public void ResetGame()
@@ -81,6 +78,7 @@ namespace Gameplay
             ActivateJoystics(false);
             _player = ServiceLocator.SharedInstanse.Resolve<IPlayer>();
             _background = ServiceLocator.SharedInstanse.Resolve<IMovableBackground>();
+            _playFabManager = ServiceLocator.SharedInstanse.Resolve<IPlayfabManager>();
         }
 
         private void OnDestroy()
@@ -130,7 +128,9 @@ namespace Gameplay
         {
             if(_background.CurrentHeight > _player.HighScore)
             {
-                _player.GetNewHighScroe(_background.CurrentHeight);
+                var score = _background.CurrentHeight;
+                _player.GetNewHighScore(score);
+                _playFabManager.SendLeaderboard((int)score);
             }
         }
 

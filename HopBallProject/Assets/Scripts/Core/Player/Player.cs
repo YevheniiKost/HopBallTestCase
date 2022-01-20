@@ -26,7 +26,7 @@ namespace Core.Player
             return new Player(0, wallet, vault);
         }
 
-        public void GetNewHighScroe(float value)
+        public void GetNewHighScore(float value)
         {
             HighScore = value;
         }
@@ -35,7 +35,7 @@ namespace Core.Player
     public interface IPlayer
     {
         float HighScore { get; }
-        void GetNewHighScroe(float value);
+        void GetNewHighScore(float value);
         IWallet Wallet { get; }
         IVault Vault { get; }
     }
